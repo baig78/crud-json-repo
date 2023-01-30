@@ -1,0 +1,32 @@
+{
+  "item": [
+    {
+      "itemName": "naimath",
+      "catagory": "pizza-1",
+      "date": "2023-01-30T18:30:00.000Z",
+      "type": "type",
+      "price": 500,
+      "comment": "baig",
+      "id": 1
+    },
+    {
+      "itemName": "naimath",
+      "catagory": "tacos-2",
+      "date": "2023-01-01T18:30:00.000Z",
+      "type": "type",
+      "price": 232,
+      "comment": "fdgfg",
+      "id": 2
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
