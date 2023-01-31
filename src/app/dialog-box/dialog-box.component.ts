@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ApiService } from '../services/api.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 interface Catagory {
   value: string;
@@ -13,6 +15,7 @@ interface Catagory {
   styleUrls: ['./dialog-box.component.scss']
 })
 export class DialogBoxComponent implements OnInit {
+  actionBtn: string = "save";
 
 itemForm! : FormGroup;
 
@@ -26,7 +29,9 @@ itemForm! : FormGroup;
 
   constructor(
     private FormBuilder: FormBuilder,
-    private api: ApiService
+    private api: ApiService,
+    @Inject(MAT_DIALOG_DATA) public editData :any,
+    private dialogRef: MatDialogRef<DialogBoxComponent>
   ) { }
 
   ngOnInit(): void {
@@ -37,22 +42,47 @@ itemForm! : FormGroup;
       type: ['',Validators.required],
       price: ['',Validators.required],
       comment: ['',Validators.required],
-    })
+    });
+  if(this.editData){
+    this.actionBtn = "Update"
+    this.itemForm.controls['itemName'].setValue(this.editData.itemName)
+    this.itemForm.controls['catagory'].setValue(this.editData.catagory)
+    this.itemForm.controls['date'].setValue(this.editData.date)
+    this.itemForm.controls['type'].setValue(this.editData.type)
+    this.itemForm.controls['price'].setValue(this.editData.price)
+    this.itemForm.controls['comment'].setValue(this.editData.comment)
+  }
   }
 
 
   addItem(){
-   if(this.itemForm.valid){
-    this.api.postItem(this.itemForm.value).subscribe({
+   if(this.editData){
+    if(this.itemForm.valid){
+      this.api.postItem(this.itemForm.value).subscribe({
+        next:(res)=>{
+          alert("Item added Successfully")
+          this.itemForm.reset();
+          this.dialogRef.close('save');
+        },
+        error:()=>{
+          alert("Error while adding the item")
+        }
+      })
+     }
+     else{
+      this.updateItem()
+     }
+   }
+  }
+
+  updateItem(){
+    this.api.putItem(this.itemForm.value,this.editData.id).subscribe({
       next:(res)=>{
-        alert("Item added Successfully")
+        alert("Item updated Successfully")
         this.itemForm.reset();
-      },
-      error:()=>{
-        alert("Error while adding the item")
+        this.dialogRef.close('update');
       }
     })
-   }
   }
 
 }
